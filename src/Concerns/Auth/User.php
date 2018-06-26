@@ -11,4 +11,18 @@ use Railken\LaraOre\User\User as BaseUser;
 class User extends BaseUser implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
+
+    /**
+     * Retrieve user for passport oauth.
+     *
+     * @param string $identifier
+     *
+     * @return User
+     */
+    public function findForPassport($identifier)
+    {
+        return (new static)->newQuery()->orWhere(function ($q) use ($identifier) {
+            return $q->orWhere('email', $identifier)->orWhere('name', $identifier);
+        })->where('enabled', 1)->first();
+    }
 }
