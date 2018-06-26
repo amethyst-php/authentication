@@ -3,7 +3,7 @@
 return [
 
     'entity' => Railken\LaraOre\Concerns\Auth\User::class,
-    
+
     'http' => [
 
         /*
@@ -15,7 +15,7 @@ return [
         |
         */
         'controller' => Railken\LaraOre\Http\Controllers\AuthController::class,
-        
+
         /*
         |--------------------------------------------------------------------------
         | Router Options
@@ -27,5 +27,5 @@ return [
         'router' => [
             'prefix'      => '/auth',
         ],
-    ]
+    ],
 ];
