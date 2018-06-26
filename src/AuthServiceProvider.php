@@ -67,9 +67,9 @@ class AuthServiceProvider extends ServiceProvider
         Router::group(Config::get('ore.auth.http.router'), function ($router) {
             $controller = Config::get('ore.auth.http.controller');
 
-            $router->post('/sign-in', ['uses' => $controller . '@signIn']);
-            $router->post('/provider/{name}/access_token', ['uses' => $controller . '@accessToken']);
-            $router->post('/provider/{name}/exchange_token', ['uses' => $controller . '@exchangeToken']);
+            $router->post('/sign-in', ['uses' => $controller.'@signIn']);
+            $router->post('/provider/{name}/access_token', ['uses' => $controller.'@accessToken']);
+            $router->post('/provider/{name}/exchange_token', ['uses' => $controller.'@exchangeToken']);
         });
     }
 }

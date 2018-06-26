@@ -2,8 +2,6 @@
 
 namespace Railken\LaraOre\Auth\Tests;
 
-use Railken\Bag;
-
 abstract class BaseTest extends \Orchestra\Testbench\TestCase
 {
     protected function getPackageProviders($app)
@@ -12,7 +10,7 @@ abstract class BaseTest extends \Orchestra\Testbench\TestCase
             \Railken\LaraOre\AuthServiceProvider::class,
         ];
     }
-    
+
     /**
      * Setup the test environment.
      */

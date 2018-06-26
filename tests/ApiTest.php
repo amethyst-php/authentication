@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Config;
 
 class ApiTest extends BaseTest
 {
-
     /**
      * Retrieve basic url.
      *
@@ -14,7 +13,7 @@ class ApiTest extends BaseTest
      */
     public function getBaseUrl()
     {
-        return Config::get('ore.api.router.prefix') . Config::get('ore.auth.http.router.prefix');
+        return Config::get('ore.api.router.prefix').Config::get('ore.auth.http.router.prefix');
     }
 
     /**
@@ -29,9 +28,10 @@ class ApiTest extends BaseTest
             'password' => 'vercingetorige',
         ]);
         $response->assertStatus(200);
-        
+
         $access_token = json_decode($response->getContent())->data->access_token;
         $this->withHeaders(['Authorization' => 'Bearer '.$access_token]);
+
         return $response;
     }
 }
