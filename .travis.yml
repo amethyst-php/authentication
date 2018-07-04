@@ -9,12 +9,11 @@ addons:
   apt:
     sources:
       - mysql-5.7-trusty
-      - google-chrome
     packages:
       - mysql-server
       - mysql-client
       - libxml2-utils
-      - google-chrome-stable
+      - xvfb
       
 php:
   - 7.1
