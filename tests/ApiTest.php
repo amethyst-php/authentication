@@ -59,7 +59,7 @@ class ApiTest extends BaseTest
         $dusk = new Dusk;
         $dusk->visit($github_url);
                 
-        $dir = __DIR__."/../build/";
+        $dir = __DIR__."/../build";
         $this->prepareDir($dir);
         
         $dusk->getDriver()->takeScreenshot($dir."/1.png");
@@ -99,8 +99,6 @@ class ApiTest extends BaseTest
 
     public function prepareDir($dir)
     {
-        $dir = dirname($dir);
-
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
