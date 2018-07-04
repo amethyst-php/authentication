@@ -26,5 +26,7 @@ abstract class BaseTest extends \Orchestra\Testbench\TestCase
         // $this->artisan('vendor:publish', ['--provider' => 'Railken\LaraOre\AuthServiceProvider', '--force' => true]);
         $this->artisan('lara-ore:user:install');
         $this->artisan('migrate');
+
+        config(['ore.user.entity' => config('ore.auth.entity')]);
     }
 }

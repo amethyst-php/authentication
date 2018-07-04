@@ -29,25 +29,13 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->loadRoutes();
 
-        $callback = function ($router) {
-            $router->all();
-        };
-
-        $options = array_merge([
-            'namespace' => '\Laravel\Passport\Http\Controllers',
-            'prefix'    => 'api/v1/oauth',
-        ], []);
-
-        Route::group($options, function ($router) use ($callback) {
-            $callback(new RouteRegistrar($router));
-        });
-
+        Passport::routes();
         Passport::tokensExpireIn(now()->addDays(15));
         Passport::refreshTokensExpireIn(now()->addDays(30));
     }
 
     /**
-     * Register any application services.
+     * Register any application services.so
      *
      * @return void
      */
@@ -67,9 +55,9 @@ class AuthServiceProvider extends ServiceProvider
         Router::group(Config::get('ore.auth.http.router'), function ($router) {
             $controller = Config::get('ore.auth.http.controller');
 
-            $router->post('/sign-in', ['uses' => $controller.'@signIn']);
-            $router->post('/provider/{name}/access_token', ['uses' => $controller.'@accessToken']);
-            $router->post('/provider/{name}/exchange_token', ['uses' => $controller.'@exchangeToken']);
+            $router->post('/', ['uses' => $controller.'@signIn']);
+            $router->post('/{name}', ['uses' => $controller.'@signInWithProvider']);
+            //$router->post('/{name}/exchange_token', ['uses' => $controller.'@exchangeToken']);
         });
     }
 }

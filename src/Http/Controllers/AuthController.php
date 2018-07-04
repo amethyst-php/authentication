@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Railken\LaraOre\Api\Http\Controllers\Controller;
-use Railken\LaraOre\Concerns\Auth\OAuth\FacebookProvider;
-use Railken\LaraOre\Concerns\Auth\OAuth\GithubProvider;
-use Railken\LaraOre\Concerns\Auth\OAuth\GitlabProvider;
-use Railken\LaraOre\Concerns\Auth\OAuth\GoogleProvider;
+use Laravel\Socialite\Two\GithubProvider;
 use Railken\LaraOre\User\UserManager;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -54,19 +53,17 @@ class AuthController extends Controller
      */
     protected $providers = [
         'github'   => GithubProvider::class,
-        'gitlab'   => GitlabProvider::class,
-        'google'   => GoogleProvider::class,
-        'facebook' => FacebookProvider::class,
     ];
 
     /**
      * Get provider.
      *
      * @param string $name
+     * @param Request $request
      *
      * @return \Railken\LaraOre\Concerns\Auth\OAuth\Provider
      */
-    public function getProvider($name)
+    public function getProvider($name, $request)
     {
         $class = isset($this->providers[$name]) ? $this->providers[$name] : null;
 
@@ -74,7 +71,7 @@ class AuthController extends Controller
             return;
         }
 
-        return new $class();
+        return new $class($request, $request->input('client_id'), $request->input('client_secret'), $request->input('redirect_url'));
     }
 
     /**
@@ -102,7 +99,7 @@ class AuthController extends Controller
             'client_id'     => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
         ]);
-        $request = Request::create('api/v1/oauth/token', 'POST', []);
+        $request = Request::create('/oauth/token', 'POST', []);
 
         $response = Route::dispatch($request);
 
@@ -126,89 +123,49 @@ class AuthController extends Controller
     /**
      * Request token and generate a new one.
      *
-     * @param string  $provider
+     * @param string  $provider_name
      * @param Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function accessToken($provider, Request $request)
+    public function signInWithProvider($provider_name, Request $request)
     {
-        $provider = $this->getProvider($provider);
+        $provider = $this->getProvider($provider_name, $request);
+        $provider->stateless();
 
         if (!$provider) {
-            return $this->error([
-                'code'    => 'AUTH.PROVIDER.PROVIDER_NOT_FOUND',
+            return $this->error(['errors' => [
+                'code'    => 'PROVIDER_NOT_FOUND',
                 'message' => 'No provider found',
-            ]);
+            ]]);
         }
 
-        try {
-            $response = $provider->issueAccessToken($request);
-            $access_token = $response->access_token;
-        } catch (\Exception $e) {
-            return $this->error([
-                'code'    => 'AUTH.PROVIDER.CODE_NOT_VALID',
-                'message' => 'Code invalid or expired',
-            ]);
+        if ($request->input('code') !== null) {
+
+            try {
+                return $this->authenticateByCode($provider, $request->input('code'));
+            } catch (\Exception $e) {
+                return $this->error([
+                    'code'    => 'CODE_NOT_VALID',
+                    'message' => 'Code invalid or expired' . $e->getMessage(),
+                ]);
+            }
         }
 
-        return $this->success([
-            'access_token' => $access_token,
-            'provider'     => $provider->getName(),
-        ]);
     }
 
-    /**
-     * Request token and generate a new one.
-     *
-     * @param string  $provider
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exchangeToken($provider, Request $request)
+    public function authenticateByCode($provider, string $code)
     {
-        $provider = $this->getProvider($provider);
+        $provider_user = $provider->user();
 
-        if (!$provider) {
-            return $this->error([
-                'code'    => 'AUTH.PROVIDER.PROVIDER_NOT_FOUND',
-                'message' => 'No provider found',
-            ]);
-        }
-
-        $access_token = $request->input('access_token');
-
-        if (!$access_token) {
-            return $this->error([
-                'code'    => 'AUTH.PROVIDER.ACCESS_TOKEN_MISSING',
-                'message' => 'access_token is missing',
-            ]);
-        }
-
-        try {
-            $provider_user = $provider->getUser($access_token);
-        } catch (\Railken\LaraOre\Concerns\Auth\OAuth\Exceptions\EmailNotFoundException $e) {
-            return $this->error([
-                'code'    => 'AUTH.PROVIDER.EMAIL_NOT_FOUND',
-                'message' => 'Email not found',
-            ]);
-        } catch (\Exception $e) {
-            return $this->error([
-                'code'    => 'AUTH.PROVIDER.ACCESS_TOKEN_NOT_VALID',
-                'message' => 'Token invalid or expired',
-            ]);
-        }
-
-        $user = $this->manager->getRepository()->findOneByEmail($provider_user->email);
+        $user = $this->manager->getRepository()->findOneByEmail($provider_user->getEmail());
 
         if (!$user) {
             $result = $this->manager->create([
-                'username' => $provider_user->username,
+                'name'     => $provider_user->getNickname() ? $provider_user->getNickname() : $provider_user->getName(),
                 'role'     => 'user',
-                'password' => sha1(str_random()),
-                'avatar'   => $provider_user->avatar,
-                'email'    => $provider_user->email,
+                'password' => str_random(32),
+                'email'    => $provider_user->getEmail(),
             ]);
 
             if (!$result->ok()) {
@@ -216,13 +173,16 @@ class AuthController extends Controller
             }
 
             $user = $result->getResource();
-
-            $user->enabled = 1;
-            $user->save();
         }
 
+        
         $token = $user->createToken('login');
 
-        return $this->success($this->serializeToken($token));
+        return $this->success([
+            'token_type'   => 'Bearer',
+            'expires_in'   => 0,
+            'access_token' => $token->accessToken,
+        ]);
+
     }
 }
