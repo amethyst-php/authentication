@@ -4,7 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.1",
-        "laravel/passport": "^5.0",
+        "laravel/passport": "^6.0",
         "railken/lara-ore-api": "dev-master",
         "railken/lara-ore-support": "dev-master",
         "railken/lara-ore-user": "dev-master"
@@ -21,7 +21,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { "Railken\\LaraOre\\Auth\\Tests\\": "tests/" }
+        "psr-4": { 
+            "Railken\\LaraOre\\Auth\\Tests\\": "tests/" 
+        }
     },
     "extra": {
         "laravel": {
