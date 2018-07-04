@@ -1,6 +1,6 @@
 language: php
 
-sudo: false
+sudo: true
 
 services:
   - mysql
@@ -41,7 +41,9 @@ install:
   - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
 
 before_script:
-  - Xvfb -ac :0 -screen 0 1280x1024x16 &
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - ./vendor/laravel/dusk/bin/chromedriver-linux &
   - mysql_upgrade -u root 
   - mysql -h localhost -e "CREATE DATABASE homestead;"
   - mysql -h localhost -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
