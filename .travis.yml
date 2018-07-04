@@ -41,6 +41,7 @@ install:
   - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
 
 before_script:
+  - Xvfb :0 -screen 0 1280x960x24 > /dev/null 2>&1 &
   - mysql_upgrade -u root 
   - mysql -h localhost -e "CREATE DATABASE homestead;"
   - mysql -h localhost -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
