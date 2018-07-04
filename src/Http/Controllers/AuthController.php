@@ -141,7 +141,6 @@ class AuthController extends Controller
         }
 
         if ($request->input('code') !== null) {
-
             try {
                 return $this->authenticateByCode($provider, $request->input('code'));
             } catch (\Exception $e) {
@@ -151,7 +150,6 @@ class AuthController extends Controller
                 ]);
             }
         }
-
     }
 
     public function authenticateByCode($provider, string $code)
@@ -183,6 +181,5 @@ class AuthController extends Controller
             'expires_in'   => 0,
             'access_token' => $token->accessToken,
         ]);
-
     }
 }

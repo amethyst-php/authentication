@@ -71,12 +71,11 @@ class ApiTest extends BaseTest
         $dusk->pause(3000);
 
         $url = $dusk->getDriver()->getCurrentURL();
-        $host = parse_url($url, PHP_URL_HOST); 
+        $host = parse_url($url, PHP_URL_HOST);
         $dusk->getDriver()->takeScreenshot($dir."/2.png");
 
         # Authorize
         if ($host === 'github.com') {
-
             $dusk->click("#js-oauth-authorize-btn");
             $dusk->pause(5000);
         }
