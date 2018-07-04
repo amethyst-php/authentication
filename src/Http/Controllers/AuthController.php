@@ -21,29 +21,13 @@ class AuthController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param UserManager
+     * @param UserManager $manager
      *
      * @return void
      */
     public function __construct(UserManager $manager)
     {
         $this->manager = $manager;
-    }
-
-    /**
-     * Serialize token.
-     *
-     * @param \Laravel\Passport\Token $token
-     *
-     * @return array
-     */
-    public function serializeToken($token)
-    {
-        return [
-            'access_token' => $token->accessToken,
-            'token_type'   => 'Bearer',
-            'expire_in'    => 0,
-        ];
     }
 
     /**
@@ -61,14 +45,14 @@ class AuthController extends Controller
      * @param string $name
      * @param Request $request
      *
-     * @return \Railken\LaraOre\Concerns\Auth\OAuth\Provider
+     * @return \Laravel\Socialite\Two\AbstractProvider|null
      */
     public function getProvider($name, $request)
     {
         $class = isset($this->providers[$name]) ? $this->providers[$name] : null;
 
         if (!$class) {
-            return;
+            return null;
         }
 
         return new $class($request, $request->input('client_id'), $request->input('client_secret'), $request->input('redirect_url'));
@@ -131,7 +115,6 @@ class AuthController extends Controller
     public function signInWithProvider($provider_name, Request $request)
     {
         $provider = $this->getProvider($provider_name, $request);
-        $provider->stateless();
 
         if (!$provider) {
             return $this->error(['errors' => [
@@ -139,6 +122,8 @@ class AuthController extends Controller
                 'message' => 'No provider found',
             ]]);
         }
+
+        $provider->stateless();
 
         if ($request->input('code') !== null) {
             try {
@@ -152,11 +137,22 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Authenticate a user by the "code" of oauth2
+     *
+     * @param \Laravel\Socialite\Two\AbstractProvider $provider
+     * @param string $code
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function authenticateByCode($provider, string $code)
     {
         $provider_user = $provider->user();
 
-        $user = $this->manager->getRepository()->findOneByEmail($provider_user->getEmail());
+        /** @var \Railken\LaraOre\User\UserRepository */
+        $repository = $this->manager->getRepository();
+
+        $user = $repository->findOneByEmail($provider_user->getEmail());
 
         if (!$user) {
             $result = $this->manager->create([
