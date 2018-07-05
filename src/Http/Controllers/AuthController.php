@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Railken\LaraOre\Api\Http\Controllers\Controller;
 use Laravel\Socialite\Two\GithubProvider;
+use Laravel\Socialite\Two\BitbucketProvider;
+use Laravel\Socialite\Two\GoogleProvider;
+use Laravel\Socialite\Two\FacebookProvider;
+use Laravel\Socialite\Two\LinkedInProvider;
 use Railken\LaraOre\User\UserManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -36,7 +40,11 @@ class AuthController extends Controller
      * @var array
      */
     protected $providers = [
-        'github'   => GithubProvider::class,
+        'github'    => GithubProvider::class,
+        'bitbucket' => BitbucketProvider::class,
+        'google'    => GoogleProvider::class,
+        'facebook'  => FacebookProvider::class,
+        'linkedin'  => LinkedInProvider::class,
     ];
 
     /**
