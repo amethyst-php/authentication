@@ -1,31 +1,31 @@
 <?php
 
 return [
-
+    /*
+    |--------------------------------------------------------------------------
+    | Entity
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the entity user used for authentication
+    |
+    */
     'entity' => Railken\LaraOre\Concerns\Auth\User::class,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Http configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the routes
+    |
+    */
     'http' => [
-
-        /*
-        |--------------------------------------------------------------------------
-        | Class name controller
-        |--------------------------------------------------------------------------
-        |
-        | Here you may define the controller that will handle all the requests
-        |
-        */
-        'controller' => Railken\LaraOre\Http\Controllers\AuthController::class,
-
-        /*
-        |--------------------------------------------------------------------------
-        | Router Options
-        |--------------------------------------------------------------------------
-        |
-        | Here you may define all the options that will be used by the route group
-        |
-        */
-        'router' => [
-            'prefix'      => '/auth',
+        'common' => [
+            'enabled'    => true,
+            'controller' => Railken\LaraOre\Http\Controllers\Common\AuthController::class,
+            'router'     => [
+                'prefix'      => '/auth',
+            ],
         ],
     ],
 ];

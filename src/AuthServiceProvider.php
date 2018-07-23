@@ -2,19 +2,16 @@
 
 namespace Railken\LaraOre;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
-use Laravel\Passport\RouteRegistrar;
 use Railken\LaraOre\Api\Support\Router;
 
 class AuthServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -35,9 +32,7 @@ class AuthServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register any application services.so
-     *
-     * @return void
+     * Register any application services.so.
      */
     public function register()
     {
@@ -52,12 +47,16 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function loadRoutes()
     {
-        Router::group(Config::get('ore.auth.http.router'), function ($router) {
-            $controller = Config::get('ore.auth.http.controller');
+        $config = Config::get('ore.auth.http.common');
 
-            $router->post('/', ['uses' => $controller.'@signIn']);
-            $router->post('/{name}', ['uses' => $controller.'@signInWithProvider']);
-            //$router->post('/{name}/exchange_token', ['uses' => $controller.'@exchangeToken']);
-        });
+        if (Arr::get($config, 'enabled')) {
+            Router::group('common', Arr::get($config, 'router'), function ($router) use ($config) {
+                $controller = Arr::get($config, 'controller');
+
+                $router->post('/', ['uses' => $controller.'@signIn']);
+                $router->post('/{name}', ['uses' => $controller.'@signInWithProvider']);
+                //$router->post('/{name}/exchange_token', ['uses' => $controller.'@exchangeToken']);
+            });
+        }
     }
 }

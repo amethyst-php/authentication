@@ -1,19 +1,17 @@
 <?php
 
-namespace Railken\LaraOre\Http\Controllers;
+namespace Railken\LaraOre\Http\Controllers\Common;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Railken\LaraOre\Api\Http\Controllers\Controller;
-use Laravel\Socialite\Two\GithubProvider;
 use Laravel\Socialite\Two\BitbucketProvider;
-use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\FacebookProvider;
+use Laravel\Socialite\Two\GithubProvider;
+use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\LinkedInProvider;
+use Railken\LaraOre\Api\Http\Controllers\Controller;
 use Railken\LaraOre\User\UserManager;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -21,18 +19,6 @@ class AuthController extends Controller
      * @var UserManager
      */
     protected $manager;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @param UserManager $manager
-     *
-     * @return void
-     */
-    public function __construct(UserManager $manager)
-    {
-        $this->manager = $manager;
-    }
 
     /**
      * List of all providers.
@@ -48,9 +34,19 @@ class AuthController extends Controller
     ];
 
     /**
+     * Create a new controller instance.
+     *
+     * @param UserManager $manager
+     */
+    public function __construct(UserManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
      * Get provider.
      *
-     * @param string $name
+     * @param string  $name
      * @param Request $request
      *
      * @return \Laravel\Socialite\Two\AbstractProvider|null
@@ -139,17 +135,17 @@ class AuthController extends Controller
             } catch (\Exception $e) {
                 return $this->error([
                     'code'    => 'CODE_NOT_VALID',
-                    'message' => 'Code invalid or expired' . $e->getMessage(),
+                    'message' => 'Code invalid or expired'.$e->getMessage(),
                 ]);
             }
         }
     }
 
     /**
-     * Authenticate a user by the "code" of oauth2
+     * Authenticate a user by the "code" of oauth2.
      *
      * @param \Laravel\Socialite\Two\AbstractProvider $provider
-     * @param string $code
+     * @param string                                  $code
      *
      * @return \Illuminate\Http\Response
      */
@@ -177,7 +173,6 @@ class AuthController extends Controller
             $user = $result->getResource();
         }
 
-        
         $token = $user->createToken('login');
 
         return $this->success([

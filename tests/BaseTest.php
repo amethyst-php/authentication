@@ -4,13 +4,6 @@ namespace Railken\LaraOre\Auth\Tests;
 
 abstract class BaseTest extends \Orchestra\Testbench\TestCase
 {
-    protected function getPackageProviders($app)
-    {
-        return [
-            \Railken\LaraOre\AuthServiceProvider::class,
-        ];
-    }
-
     /**
      * Setup the test environment.
      */
@@ -28,5 +21,12 @@ abstract class BaseTest extends \Orchestra\Testbench\TestCase
         $this->artisan('migrate');
 
         config(['ore.user.entity' => config('ore.auth.entity')]);
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            \Railken\LaraOre\AuthServiceProvider::class,
+        ];
     }
 }

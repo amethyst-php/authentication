@@ -2,15 +2,15 @@
 
 namespace Railken\LaraOre\Auth\Tests;
 
-use Illuminate\Support\Facades\Config;
-use Railken\LaraOre\Support\Testing\ApiTestableTrait;
 use donatj\MockWebServer\MockWebServer;
 use duncan3dc\Laravel\Dusk;
+use Illuminate\Support\Facades\Config;
+use Railken\LaraOre\Support\Testing\ApiTestableTrait;
 
 class ApiTest extends BaseTest
 {
     use ApiTestableTrait;
-    
+
     /**
      * Retrieve basic url.
      *
@@ -18,13 +18,11 @@ class ApiTest extends BaseTest
      */
     public function getBaseUrl()
     {
-        return Config::get('ore.api.router.prefix').Config::get('ore.auth.http.router.prefix');
+        return Config::get('ore.api.router.prefix').Config::get('ore.auth.http.common.router.prefix');
     }
 
     /**
      * Test common requests.
-     *
-     * @return void
      */
     public function testSignIn()
     {
@@ -42,8 +40,6 @@ class ApiTest extends BaseTest
 
     /**
      * Test common requests.
-     *
-     * @return void
      */
     public function testSignInGithub()
     {
@@ -56,31 +52,31 @@ class ApiTest extends BaseTest
 
         $github_url = "https://github.com/login/oauth/authorize?scope=user:email&client_id={$client_id}&client_secret={$client_secret}";
 
-        $dusk = new Dusk;
+        $dusk = new Dusk();
         $dusk->visit($github_url);
-                
-        $dir = __DIR__."/../build";
-        $this->prepareDir($dir);
-        
-        $dusk->getDriver()->takeScreenshot($dir."/1.png");
 
-        # Authenticate
+        $dir = __DIR__.'/../build';
+        $this->prepareDir($dir);
+
+        $dusk->getDriver()->takeScreenshot($dir.'/1.png');
+
+        // Authenticate
         $dusk->value('#login_field', env('TEST_GITHUB_USERNAME'));
         $dusk->type('#password', env('TEST_GITHUB_PASSWORD'));
-        $dusk->click(".auth-form-body .btn-primary");
+        $dusk->click('.auth-form-body .btn-primary');
         $dusk->pause(3000);
 
         $url = $dusk->getDriver()->getCurrentURL();
         $host = parse_url($url, PHP_URL_HOST);
-        $dusk->getDriver()->takeScreenshot($dir."/2.png");
+        $dusk->getDriver()->takeScreenshot($dir.'/2.png');
 
-        # Authorize
+        // Authorize
         if ($host === 'github.com') {
-            $dusk->click("#js-oauth-authorize-btn");
+            $dusk->click('#js-oauth-authorize-btn');
             $dusk->pause(5000);
         }
 
-        $dusk->getDriver()->takeScreenshot($dir."/3.png");
+        $dusk->getDriver()->takeScreenshot($dir.'/3.png');
 
         $url = $dusk->getDriver()->getCurrentURL();
 
@@ -88,10 +84,10 @@ class ApiTest extends BaseTest
         parse_str($query, $params);
         $code = $params['code'];
 
-        $response = $this->post($this->getBaseUrl() . "/github", [
-            'client_id' => $client_id,
+        $response = $this->post($this->getBaseUrl().'/github', [
+            'client_id'     => $client_id,
             'client_secret' => $client_secret,
-            'code' => $code
+            'code'          => $code,
         ]);
 
         $this->assertOrPrint($response, 200);
