@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 use Railken\LaraOre\Api\Support\Router;
 
-class AuthServiceProvider extends ServiceProvider
+class AuthenticationServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.

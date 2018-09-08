@@ -26,7 +26,7 @@ abstract class BaseTest extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Railken\LaraOre\AuthServiceProvider::class,
+            \Railken\LaraOre\AuthenticationServiceProvider::class,
         ];
     }
 }

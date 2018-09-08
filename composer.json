@@ -1,6 +1,6 @@
 {
-    "name": "railken/lara-ore-auth",
-    "keywords": ["laravel", "lara-ore", "lara-ore-auth", "auth"],
+    "name": "railken/lara-ore-authentication",
+    "keywords": ["laravel", "lara-ore", "lara-ore-authentication", "auth"],
     "license": "MIT",
     "require": {
         "php": ">=7.1",
@@ -31,7 +31,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Railken\\LaraOre\\AuthServiceProvider"
+                "Railken\\LaraOre\\AuthenticationServiceProvider"
             ]
         }
     }
