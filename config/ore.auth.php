@@ -20,9 +20,9 @@ return [
     |
     */
     'http' => [
-        'common' => [
+        'app' => [
             'enabled'    => true,
-            'controller' => Railken\LaraOre\Http\Controllers\Common\AuthController::class,
+            'controller' => Railken\LaraOre\Http\Controllers\App\AuthController::class,
             'router'     => [
                 'prefix'      => '/auth',
             ],

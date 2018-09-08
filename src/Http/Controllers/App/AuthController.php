@@ -1,6 +1,6 @@
 <?php
 
-namespace Railken\LaraOre\Http\Controllers\Common;
+namespace Railken\LaraOre\Http\Controllers\App;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +12,7 @@ use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\LinkedInProvider;
 use Railken\LaraOre\Api\Http\Controllers\Controller;
 use Railken\LaraOre\User\UserManager;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -67,16 +68,16 @@ class AuthController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function signIn(Request $request)
     {
         $oauth_client = DB::table('oauth_clients')->where('password_client', 1)->first();
 
         if (!$oauth_client) {
-            return $this->error([
+            return $this->response([
                 'code' => 'CLIENT_NOT_FOUND',
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $request->request->add([
@@ -94,11 +95,11 @@ class AuthController extends Controller
         $body = json_decode($response->getContent());
 
         if ($response->getStatusCode() === 200) {
-            return $this->success(['data' => $body]);
+            return $this->response(['data' => $body], Response::HTTP_OK);
         }
 
         if ($response->getStatusCode() === 401) {
-            return $this->error(['code' => 'CREDENTIALS_NOT_VALID', 'message' => $body->error]);
+            return $this->response(['code' => 'CREDENTIALS_NOT_VALID', 'message' => $body->error], Response::HTTP_BAD_REQUEST);
         }
 
         if ($response->getStatusCode() === 500) {
@@ -114,17 +115,17 @@ class AuthController extends Controller
      * @param string  $provider_name
      * @param Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function signInWithProvider($provider_name, Request $request)
     {
         $provider = $this->getProvider($provider_name, $request);
 
         if (!$provider) {
-            return $this->error(['errors' => [
+            return $this->response(['errors' => [
                 'code'    => 'PROVIDER_NOT_FOUND',
                 'message' => 'No provider found',
-            ]]);
+            ]], Response::HTTP_BAD_REQUEST);
         }
 
         $provider->stateless();
@@ -133,10 +134,10 @@ class AuthController extends Controller
             try {
                 return $this->authenticateByCode($provider, $request->input('code'));
             } catch (\Exception $e) {
-                return $this->error([
+                return $this->response([
                     'code'    => 'CODE_NOT_VALID',
                     'message' => 'Code invalid or expired'.$e->getMessage(),
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         }
     }
@@ -147,7 +148,7 @@ class AuthController extends Controller
      * @param \Laravel\Socialite\Two\AbstractProvider $provider
      * @param string                                  $code
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function authenticateByCode($provider, string $code)
     {
@@ -167,7 +168,7 @@ class AuthController extends Controller
             ]);
 
             if (!$result->ok()) {
-                return $this->error(['errors' => $result->getSimpleErrors()]);
+                return $this->response(['errors' => $result->getSimpleErrors()], Response::HTTP_BAD_REQUEST);
             }
 
             $user = $result->getResource();
@@ -175,10 +176,10 @@ class AuthController extends Controller
 
         $token = $user->createToken('login');
 
-        return $this->success([
+        return $this->response([
             'token_type'   => 'Bearer',
             'expires_in'   => 0,
             'access_token' => $token->accessToken,
-        ]);
+        ], Response::HTTP_OK);
     }
 }

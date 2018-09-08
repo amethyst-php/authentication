@@ -47,10 +47,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function loadRoutes()
     {
-        $config = Config::get('ore.auth.http.common');
+        $config = Config::get('ore.auth.http.app');
 
         if (Arr::get($config, 'enabled')) {
-            Router::group('common', Arr::get($config, 'router'), function ($router) use ($config) {
+            Router::group('app', Arr::get($config, 'router'), function ($router) use ($config) {
                 $controller = Arr::get($config, 'controller');
 
                 $router->post('/', ['uses' => $controller.'@signIn']);
