@@ -1,12 +1,12 @@
 <?php
 
-namespace Railken\LaraOre;
+namespace Railken\Amethyst\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
-use Railken\LaraOre\Api\Support\Router;
+use Railken\Amethyst\Api\Support\Router;
 
 class AuthenticationServiceProvider extends ServiceProvider
 {
@@ -16,13 +16,13 @@ class AuthenticationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/ore.auth.php' => config_path('ore.auth.php'),
+            __DIR__.'/../../config/amethyst.authentication.php' => config_path('amethyst.authentication.php'),
         ], 'config');
 
         config(['auth.guards.api.driver' => 'passport']);
         config(['auth.guards.api.provider' => 'users']);
         config(['auth.providers.users.driver' => 'eloquent']);
-        config(['auth.providers.users.model' => Config::get('ore.auth.entity')]);
+        config(['auth.providers.users.model' => Config::get('amethyst.authentication.entity')]);
 
         $this->loadRoutes();
 
@@ -37,9 +37,9 @@ class AuthenticationServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(\Laravel\Passport\PassportServiceProvider::class);
-        $this->app->register(\Railken\LaraOre\ApiServiceProvider::class);
-        $this->app->register(\Railken\LaraOre\UserServiceProvider::class);
-        $this->mergeConfigFrom(__DIR__.'/../config/ore.auth.php', 'ore.auth');
+        $this->app->register(\Railken\Amethyst\Providers\ApiServiceProvider::class);
+        $this->app->register(\Railken\Amethyst\Providers\UserServiceProvider::class);
+        $this->mergeConfigFrom(__DIR__.'/../../config/amethyst.authentication.php', 'amethyst.authentication');
     }
 
     /**
@@ -47,7 +47,7 @@ class AuthenticationServiceProvider extends ServiceProvider
      */
     public function loadRoutes()
     {
-        $config = Config::get('ore.auth.http.app');
+        $config = Config::get('amethyst.authentication.http.app.authentication');
 
         if (Arr::get($config, 'enabled')) {
             Router::group('app', Arr::get($config, 'router'), function ($router) use ($config) {

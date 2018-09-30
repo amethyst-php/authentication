@@ -1,7 +1,8 @@
 <?php
 
-namespace Railken\LaraOre\Http\Controllers\App;
+namespace Railken\Amethyst\Http\Controllers\App;
 
+use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -10,8 +11,8 @@ use Laravel\Socialite\Two\FacebookProvider;
 use Laravel\Socialite\Two\GithubProvider;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\LinkedInProvider;
-use Railken\LaraOre\Api\Http\Controllers\Controller;
-use Railken\LaraOre\User\UserManager;
+use Railken\Amethyst\Api\Http\Controllers\Controller;
+use Railken\Amethyst\Managers\UserManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -154,7 +155,7 @@ class AuthController extends Controller
     {
         $provider_user = $provider->user();
 
-        /** @var \Railken\LaraOre\User\UserRepository */
+        /** @var \Railken\Amethyst\Repositories\UserRepository */
         $repository = $this->manager->getRepository();
 
         $user = $repository->findOneByEmail($provider_user->getEmail());
@@ -174,7 +175,9 @@ class AuthController extends Controller
             $user = $result->getResource();
         }
 
-        $token = $user->createToken('login');
+        $token = Container::getInstance()->make(\Laravel\Passport\PersonalAccessTokenFactory::class)->make(
+            $user->getKey(), 'login', []
+        );
 
         return $this->response([
             'token_type'   => 'Bearer',

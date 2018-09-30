@@ -1,24 +1,21 @@
 <?php
 
-namespace Railken\LaraOre\Auth\Tests;
+namespace Railken\Amethyst\Tests;
 
 use donatj\MockWebServer\MockWebServer;
 use duncan3dc\Laravel\Dusk;
 use Illuminate\Support\Facades\Config;
-use Railken\LaraOre\Support\Testing\ApiTestableTrait;
 
 class ApiTest extends BaseTest
 {
-    use ApiTestableTrait;
-
     /**
      * Retrieve basic url.
      *
      * @return string
      */
-    public function getBaseUrl()
+    public function getResourceUrl()
     {
-        return Config::get('ore.api.http.app.router.prefix').Config::get('ore.auth.http.app.router.prefix');
+        return Config::get('amethyst.api.http.app.router.prefix').Config::get('amethyst.authentication.http.app.authentication.router.prefix');
     }
 
     /**
@@ -26,11 +23,11 @@ class ApiTest extends BaseTest
      */
     public function testSignIn()
     {
-        $response = $this->post($this->getBaseUrl(), [
+        $response = $this->post($this->getResourceUrl(), [
             'username' => 'admin@admin.com',
             'password' => 'vercingetorige',
         ]);
-        $this->assertOrPrint($response, 200);
+        $response->assertStatus(200);
 
         $access_token = json_decode($response->getContent())->data->access_token;
         $this->withHeaders(['Authorization' => 'Bearer '.$access_token]);
@@ -84,13 +81,13 @@ class ApiTest extends BaseTest
         parse_str($query, $params);
         $code = $params['code'];
 
-        $response = $this->post($this->getBaseUrl().'/github', [
+        $response = $this->post($this->getResourceUrl().'/github', [
             'client_id'     => $client_id,
             'client_secret' => $client_secret,
             'code'          => $code,
         ]);
 
-        $this->assertOrPrint($response, 200);
+        $response->assertStatus(200);
     }
 
     public function prepareDir($dir)
