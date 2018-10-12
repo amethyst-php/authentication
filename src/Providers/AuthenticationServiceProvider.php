@@ -53,8 +53,8 @@ class AuthenticationServiceProvider extends ServiceProvider
             Router::group('app', Arr::get($config, 'router'), function ($router) use ($config) {
                 $controller = Arr::get($config, 'controller');
 
-                $router->post('/', ['uses' => $controller.'@signIn']);
-                $router->post('/{name}', ['uses' => $controller.'@signInWithProvider']);
+                $router->post('/', ['as' => 'basic', 'uses' => $controller.'@signIn']);
+                $router->post('/{name}', ['as' => 'provider', 'uses' => $controller.'@signInWithProvider']);
                 //$router->post('/{name}/exchange_token', ['uses' => $controller.'@exchangeToken']);
             });
         }
