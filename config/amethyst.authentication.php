@@ -25,6 +25,7 @@ return [
                 'enabled'    => true,
                 'controller' => Railken\Amethyst\Http\Controllers\App\AuthController::class,
                 'router'     => [
+                    'as'          => 'auth',
                     'prefix'      => '/auth',
                 ],
             ],
