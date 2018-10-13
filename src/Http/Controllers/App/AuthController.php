@@ -100,14 +100,12 @@ class AuthController extends Controller
         }
 
         if ($response->getStatusCode() === 401) {
-            return $this->response(['code' => 'CREDENTIALS_NOT_VALID', 'message' => $body->error], Response::HTTP_BAD_REQUEST);
+            return $this->response(['errors' => ['code' => 'NOT_VALID', 'message' => $body->error]], Response::HTTP_UNAUTHORIZED);
         }
 
-        if ($response->getStatusCode() === 500) {
-            return $response;
+        if ($response->getStatusCode() === 400) {
+            return $this->response(['errors' => ['code' => 'BAD_REQUEST', 'message' => $body->message]], Response::HTTP_BAD_REQUEST);
         }
-
-        throw new \Exception('Uhm...');
     }
 
     /**
