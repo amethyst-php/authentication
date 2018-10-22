@@ -6,7 +6,7 @@ return [
     | Entity
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the entity user used for authentication
+    | Here you may configure the entity user used for authentication.
     |
     */
     'entity' => Railken\Amethyst\Concerns\Auth\User::class,
