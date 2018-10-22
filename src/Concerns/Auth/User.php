@@ -8,8 +8,9 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Laravel\Passport\HasApiTokens;
 use Railken\Amethyst\Models\User as BaseUser;
+use Railken\Lem\Contracts\AgentContract;
 
-class User extends BaseUser implements AuthenticatableContract, AuthorizableContract
+class User extends BaseUser implements AuthenticatableContract, AuthorizableContract, AgentContract
 {
     use Authenticatable, Authorizable, HasApiTokens;
 
