@@ -174,7 +174,9 @@ class AuthController extends Controller
         }
 
         $token = Container::getInstance()->make(\Laravel\Passport\PersonalAccessTokenFactory::class)->make(
-            $user->getKey(), 'login', []
+            $user->getKey(),
+            'login',
+            []
         );
 
         return $this->response([
