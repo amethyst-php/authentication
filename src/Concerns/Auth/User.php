@@ -12,7 +12,9 @@ use Railken\Lem\Contracts\AgentContract;
 
 class User extends BaseUser implements AuthenticatableContract, AuthorizableContract, AgentContract
 {
-    use Authenticatable, Authorizable, HasApiTokens;
+    use Authenticatable;
+    use Authorizable;
+    use HasApiTokens;
 
     /**
      * Retrieve user for passport oauth.
