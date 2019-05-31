@@ -14,6 +14,7 @@ use Laravel\Socialite\Two\LinkedInProvider;
 use Railken\Amethyst\Api\Http\Controllers\Controller;
 use Railken\Amethyst\Managers\UserManager;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Routing\Router;
 
 class AuthController extends Controller
 {
@@ -21,6 +22,8 @@ class AuthController extends Controller
      * @var UserManager
      */
     protected $manager;
+
+    protected $router;
 
     /**
      * List of all providers.
@@ -40,9 +43,10 @@ class AuthController extends Controller
      *
      * @param UserManager $manager
      */
-    public function __construct(UserManager $manager)
+    public function __construct(UserManager $manager, Router $router)
     {
-        $this->manager = $manager;
+        $this->manager = $manager;  
+        $this->router = $router;
     }
 
     /**
@@ -89,9 +93,28 @@ class AuthController extends Controller
             'client_id'     => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
         ]);
-        $request = Request::create('/oauth/token', 'POST', []);
 
-        $response = Route::dispatch($request);
+        $proxy = Request::create(env('APP_URL').'/oauth/token', 'POST', $request->all());
+        var_dump($request->fullUrl());
+        var_dump($request->url());
+
+
+        $router = $this->router;
+        $application = app();
+        $closure = function () use ($application, $proxy) {
+            $route = $this->routes->match($proxy);
+            // clear resolved controller
+            if (property_exists($route, 'container')) {
+                $route->controller = null;
+            }
+            // rebind matched route's container
+            $route->setContainer($application);
+        };
+
+        $resetRouter = $closure->bindTo($router, $router);
+        $resetRouter();
+
+        $response = $router->dispatch($proxy);
 
         $body = json_decode($response->getContent());
 
