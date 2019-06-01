@@ -95,9 +95,6 @@ class AuthController extends Controller
         ]);
 
         $proxy = Request::create(env('APP_URL').'/oauth/token', 'POST', $request->all());
-        var_dump($request->fullUrl());
-        var_dump($request->url());
-
 
         $router = $this->router;
         $application = app();
