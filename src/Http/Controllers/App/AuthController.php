@@ -4,6 +4,7 @@ namespace Railken\Amethyst\Http\Controllers\App;
 
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Two\BitbucketProvider;
@@ -14,7 +15,6 @@ use Laravel\Socialite\Two\LinkedInProvider;
 use Railken\Amethyst\Api\Http\Controllers\Controller;
 use Railken\Amethyst\Managers\UserManager;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Routing\Router;
 
 class AuthController extends Controller
 {
@@ -45,7 +45,7 @@ class AuthController extends Controller
      */
     public function __construct(UserManager $manager, Router $router)
     {
-        $this->manager = $manager;  
+        $this->manager = $manager;
         $this->router = $router;
     }
 
