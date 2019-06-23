@@ -21,7 +21,7 @@ class ApiTest extends BaseTest
     /**
      * Test common requests.
      */
-    public function testSignIn()
+    public function testSignInBasic()
     {
         $response = $this->post($this->getResourceUrl(), [
             'username' => 'admin@admin.com',
@@ -48,6 +48,7 @@ class ApiTest extends BaseTest
         $server_url = $server->getServerRoot();
 
         $github_url = "https://github.com/login/oauth/authorize?scope=user:email&client_id={$client_id}&client_secret={$client_secret}";
+
 
         $dusk = new Dusk();
         $dusk->visit($github_url);

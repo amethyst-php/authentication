@@ -93,14 +93,10 @@ class AuthController extends Controller
             'client_id'     => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
         ]);
-        
+
         $proxy = Request::create(config('app.url').'/oauth/token', 'POST', $request->all());
-
-        $router = $this->router;
         
-        $this->reset($router);
-
-        $response = $router->dispatch($proxy);
+        $response = $this->prox($proxy);
 
 
         $body = json_decode($response->getContent());
@@ -196,7 +192,7 @@ class AuthController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function reset($router)
+    public function prox($proxy)
     {
         $application = app();
         
@@ -210,7 +206,10 @@ class AuthController extends Controller
             $route->setContainer($application);
         };
 
-        $resetRouter = $closure->bindTo($router, $router);
+        $resetRouter = $closure->bindTo($this->router, $this->router);
         $resetRouter();
+
+
+        return $this->router->dispatch($proxy);
     }
 }

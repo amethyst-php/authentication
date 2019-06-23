@@ -4,7 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.1",
-        "laravel/passport": "^6.0",
+        "laravel/passport": "^6.0 || ^7.0",
         "railken/amethyst-common": "0.1.*",
         "railken/amethyst-user": "0.1.*",
         "laravel/socialite": "^3.0"
