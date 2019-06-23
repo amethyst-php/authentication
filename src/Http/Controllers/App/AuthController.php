@@ -93,25 +93,15 @@ class AuthController extends Controller
             'client_id'     => $oauth_client->id,
             'client_secret' => $oauth_client->secret,
         ]);
-
-        $proxy = Request::create(env('APP_URL').'/oauth/token', 'POST', $request->all());
+        
+        $proxy = Request::create(config('app.url').'/oauth/token', 'POST', $request->all());
 
         $router = $this->router;
-        $application = app();
-        $closure = function () use ($application, $proxy) {
-            $route = $this->routes->match($proxy);
-            // clear resolved controller
-            if (property_exists($route, 'container')) {
-                $route->controller = null;
-            }
-            // rebind matched route's container
-            $route->setContainer($application);
-        };
-
-        $resetRouter = $closure->bindTo($router, $router);
-        $resetRouter();
+        
+        $this->reset($router);
 
         $response = $router->dispatch($proxy);
+
 
         $body = json_decode($response->getContent());
 
@@ -204,5 +194,23 @@ class AuthController extends Controller
             'expires_in'   => 0,
             'access_token' => $token->accessToken,
         ], Response::HTTP_OK);
+    }
+
+    public function reset($router)
+    {
+        $application = app();
+        
+        $closure = function () use ($application, $proxy) {
+            $route = $this->routes->match($proxy);
+            // clear resolved controller
+            if (property_exists($route, 'container')) {
+                $route->controller = null;
+            }
+            // rebind matched route's container
+            $route->setContainer($application);
+        };
+
+        $resetRouter = $closure->bindTo($router, $router);
+        $resetRouter();
     }
 }
