@@ -49,7 +49,6 @@ class ApiTest extends BaseTest
 
         $github_url = "https://github.com/login/oauth/authorize?scope=user:email&client_id={$client_id}&client_secret={$client_secret}";
 
-
         $dusk = new Dusk();
         $dusk->visit($github_url);
 

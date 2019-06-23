@@ -95,9 +95,8 @@ class AuthController extends Controller
         ]);
 
         $proxy = Request::create(config('app.url').'/oauth/token', 'POST', $request->all());
-        
-        $response = $this->prox($proxy);
 
+        $response = $this->prox($proxy);
 
         $body = json_decode($response->getContent());
 
@@ -195,7 +194,7 @@ class AuthController extends Controller
     public function prox($proxy)
     {
         $application = app();
-        
+
         $closure = function () use ($application, $proxy) {
             $route = $this->routes->match($proxy);
             // clear resolved controller
@@ -208,7 +207,6 @@ class AuthController extends Controller
 
         $resetRouter = $closure->bindTo($this->router, $this->router);
         $resetRouter();
-
 
         return $this->router->dispatch($proxy);
     }
