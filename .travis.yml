@@ -10,6 +10,10 @@ services:
 addons:
   apt:
     packages:
+      - chromium-chromedriver
+      - google-chrome-stable
+      - unzip
+      - xvfb
       - libxml2-utils
       
 php:
@@ -30,6 +34,9 @@ env:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 
 before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - ./vendor/laravel/dusk/bin/chromedriver-linux &
   - mysql_upgrade -u root 
   - mysql -h localhost -e "CREATE DATABASE forge;"
   - mysql -h localhost -e "CREATE USER forge@localhost"
