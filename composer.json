@@ -1,12 +1,12 @@
 {
-    "name": "railken/amethyst-authentication",
+    "name": "amethyst/authentication",
     "keywords": ["laravel", "amethyst", "amethyst-authentication", "auth"],
     "license": "MIT",
     "require": {
         "php": ">=7.1",
         "laravel/passport": "^6.0 || ^7.0",
-        "railken/amethyst-common": "0.1.*",
-        "railken/amethyst-user": "0.1.*",
+        "amethyst/common": "0.1.*",
+        "amethyst/user": "0.1.*",
         "laravel/socialite": "^3.0"
     },
     "require-dev": {
@@ -17,18 +17,18 @@
     },
     "autoload": {
         "psr-4" : {
-            "Railken\\Amethyst\\" : "src/"
+            "Amethyst\\" : "src/"
         }
     },
     "autoload-dev": {
         "psr-4": { 
-            "Railken\\Amethyst\\Tests\\": "tests/" 
+            "Amethyst\\Tests\\": "tests/" 
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Railken\\Amethyst\\Providers\\AuthenticationServiceProvider"
+                "Amethyst\\Providers\\AuthenticationServiceProvider"
             ]
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Railken\Amethyst\Http\Controllers\App;
+namespace Amethyst\Http\Controllers\App;
 
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
@@ -12,8 +12,8 @@ use Laravel\Socialite\Two\FacebookProvider;
 use Laravel\Socialite\Two\GithubProvider;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\LinkedInProvider;
-use Railken\Amethyst\Api\Http\Controllers\Controller;
-use Railken\Amethyst\Managers\UserManager;
+use Amethyst\Api\Http\Controllers\Controller;
+use Amethyst\Managers\UserManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -158,7 +158,7 @@ class AuthController extends Controller
     {
         $provider_user = $provider->user();
 
-        /** @var \Railken\Amethyst\Repositories\UserRepository */
+        /** @var \Amethyst\Repositories\UserRepository */
         $repository = $this->manager->getRepository();
 
         $user = $repository->findOneByEmail($provider_user->getEmail());

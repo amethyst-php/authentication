@@ -1,6 +1,6 @@
 <?php
 
-namespace Railken\Amethyst\Tests;
+namespace Amethyst\Tests;
 
 use donatj\MockWebServer\MockWebServer;
 use duncan3dc\Laravel\Dusk;
