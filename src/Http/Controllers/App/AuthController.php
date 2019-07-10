@@ -2,6 +2,8 @@
 
 namespace Amethyst\Http\Controllers\App;
 
+use Amethyst\Api\Http\Controllers\Controller;
+use Amethyst\Managers\UserManager;
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
@@ -12,8 +14,6 @@ use Laravel\Socialite\Two\FacebookProvider;
 use Laravel\Socialite\Two\GithubProvider;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\LinkedInProvider;
-use Amethyst\Api\Http\Controllers\Controller;
-use Amethyst\Managers\UserManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller

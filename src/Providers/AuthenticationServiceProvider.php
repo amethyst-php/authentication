@@ -2,11 +2,11 @@
 
 namespace Amethyst\Providers;
 
+use Amethyst\Api\Support\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
-use Amethyst\Api\Support\Router;
 
 class AuthenticationServiceProvider extends ServiceProvider
 {
