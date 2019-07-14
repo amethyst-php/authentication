@@ -29,4 +29,9 @@ class User extends BaseUser implements AuthenticatableContract, AuthorizableCont
             return $q->orWhere('email', $identifier)->orWhere('name', $identifier);
         })->where('enabled', 1)->first();
     }
+    
+    public function can($ability, $arguments = [])
+    {
+        return true;
+    }
 }
