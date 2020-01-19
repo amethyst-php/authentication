@@ -37,7 +37,6 @@ class AuthenticationServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(\Laravel\Passport\PassportServiceProvider::class);
-        $this->app->register(\Amethyst\Providers\ApiServiceProvider::class);
         $this->app->register(\Amethyst\Providers\UserServiceProvider::class);
         $this->mergeConfigFrom(__DIR__.'/../../config/amethyst.authentication.php', 'amethyst.authentication');
     }
