@@ -2,7 +2,7 @@
 
 namespace Amethyst\Providers;
 
-use Amethyst\Api\Support\Router;
+use Amethyst\Core\Support\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;

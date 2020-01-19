@@ -2,7 +2,7 @@
 
 namespace Amethyst\Http\Controllers\App;
 
-use Amethyst\Api\Http\Controllers\Controller;
+use Amethyst\Core\Http\Controllers\Controller;
 use Amethyst\Managers\UserManager;
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
