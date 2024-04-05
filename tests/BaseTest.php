@@ -16,6 +16,9 @@ abstract class BaseTest extends \Orchestra\Testbench\TestCase
         $this->artisan('amethyst:user:install');
 
         config(['amethyst.user.entity' => config('amethyst.authentication.entity')]);
+        app('amethyst')->boot();
+        app('eloquent.mapper')->boot();
+
     }
 
     protected function getPackageProviders($app)
